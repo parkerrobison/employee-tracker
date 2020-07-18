@@ -21,9 +21,12 @@ const mainMenuPrompt = () => {
         ]
     }]).then(function (res) {
         if (res.main === 'View All Departments') {
-            return /*function*/
+            return
             // WHEN I choose to view all departments
             // THEN I am presented with a formatted table showing department names and department ids
+            // get data
+            // write data
+            
         }
 
         if (res.main === 'View All Roles') {
