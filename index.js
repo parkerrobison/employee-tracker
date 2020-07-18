@@ -1,4 +1,6 @@
 const inquirer = require('inquirer');
+const dbFunctions = require('./dbFunctions');
+
 
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
@@ -21,23 +23,20 @@ const mainMenuPrompt = () => {
         ]
     }]).then(function (res) {
         if (res.main === 'View All Departments') {
-            return
+            return dbFunctions.viewAllDpts();
             // WHEN I choose to view all departments
             // THEN I am presented with a formatted table showing department names and department ids
-            // get data
-            // write data
-            
         }
 
         if (res.main === 'View All Roles') {
-            return /*function*/
+            return dbFunctions.viewAllRoles();
             // WHEN I choose to view all roles
             // THEN I am presented with the job title, role id, the department that role belongs to, 
             // and the salary for that role
         }
 
         if (res.main === 'View All Employees') {
-            return /*function*/
+            return dbFunctions.viewAllEmp();
             // WHEN I choose to view all employees
             // THEN I am presented with a formatted table showing employee data, 
             // including employee ids, first names, last names, job titles, departments, salaries, 
@@ -45,27 +44,27 @@ const mainMenuPrompt = () => {
         }
 
         if (res.main === 'Add a Department') {
-            return /*function*/
+            return /*addDept();*/
             // WHEN I choose to add a department
             // THEN I am prompted to enter the name of the department and that department is added to the database
         }
 
         if (res.main === 'Add a Role') {
-            return /*function*/
+            return /*addRole()*/
             // WHEN I choose to add a role
             // THEN I am prompted to enter the name, salary, 
             // and department for the role and that role is added to the database
         }
 
         if (res.main === 'Add an Employee') {
-            return /*function*/
+            return /*addEmployee()*/
             // WHEN I choose to add an employee
             // THEN I am prompted to enter the employee’s first name, last name, role, 
             // and manager and that employee is added to the database
         }
 
         if (res.main === 'Update Employee Role') {
-            return /*function*/
+            return /*updateEmployee()*/
             // WHEN I choose to update an employee role
             // THEN I am prompted to select an employee to update and their new role 
             // and this information is updated in the database 
