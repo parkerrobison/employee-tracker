@@ -1,4 +1,4 @@
-INSERT INTO department (dName)
+INSERT INTO department (name)
 VALUES 
 ('HR'),
 ('Sales'),
@@ -20,21 +20,21 @@ VALUES
 ('Financier', 95000, 4),
 ('Sales Team Manager', 80000, 2);
 
-INSERT INTO employee (first_name, last_name, role_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-('Susan', 'Strong', 4),
-('Jamal', 'Hannock', 1),
-('Tran', 'Ho', 2),
-('Josue', 'Luna Diaz', 2),
-('Mitchell', 'Prichard', 3),
-('Go', 'Fukui', 5),
-('Muhammed', 'Pudi', 4),
-('Rachel', 'Goldstein', 6),
-('Sam', 'Yates', 7),
-('Gilbert', 'Jones', 5),
-('Kwame', 'Oluo', 11),
-('Marcela', 'Mijangos', 10),
-('Hiro', 'Akina', 9),
-('Michelle', 'Ferrel', 7),
-('Kirsty', 'Borchards', 8),
-('Chantelle', 'Washington', 9);
+('Susan', 'Strong', 4, 11),
+('Jamal', 'Hannock', 1, null),
+('Tran', 'Ho', 2, 4),
+('Josue', 'Luna Diaz', 2, null),
+('Mitchell', 'Prichard', 3, 12),
+('Tadashi', 'Fukui', 5, 4),
+('Muhammed', 'Pudi', 4, 11),
+('Rachel', 'Goldstein', 6, 4),
+('Sam', 'Yates', 7, null),
+('Gilbert', 'Jones', 5, 4),
+('Kwame', 'Oluo', 11, null),
+('Marcela', 'Mijangos', 10, null),
+('Hiro', 'Akina', 9, 2),
+('Michelle', 'Ferrel', 8, 9),
+('Kirsty', 'Borchards', 8, 9),
+('Chantelle', 'Washington', 9, 2);
