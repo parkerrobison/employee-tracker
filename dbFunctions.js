@@ -9,36 +9,77 @@ const connection = mysql.createConnection({
   });
 
 const viewAllDpts = () => {
-    
-    connection.query(
-    'SELECT * FROM department',
-    function(err, results, fields) {
-        console.table(results); 
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            'SELECT * FROM department',
+            function(err, results) {
+                resolve(results)
+            })
     })
+    
 }
 
 const viewAllRoles = () => {
-    
-    connection.query(
-    'SELECT * FROM roles',
-    function(err, results, fields) {
-        console.table(results); 
-    }
-    );
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            'SELECT roles.id id, roles.title title, roles.salary salary, department.name Department Name FROM roles LEFT JOIN department ON roles.department_id = department.id',
+            function(err, results) {
+                resolve(results); 
+            });
+    })
 }
 
 const viewAllEmp = () => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+           `SELECT employee.id id, employee.first_name firstName,
+           employee.last_name lastName, roles.title, CONCAT(employee2.first_name, " ", employee2.last_name) manager FROM employee 
+           LEFT JOIN employee employee2 ON employee.manager_id = employee2.id
+           LEFT JOIN roles ON employee.role_id = roles.id;`,
+            function(err, results) {
+                resolve(results);
+            }
+        )
+    })
+    
+}
 
-    connection.query(
-        'SELECT * FROM employee',
-        function(err, results, fields) {
-            console.table(results);
-        }
-    )
+const addDept = (message) => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            'INSERT INTO department SET ?',
+           {
+               name: message
+           },
+           function(err, results) {
+               if (err) throw err;
+               resolve(results);
+           })
+    })
+    
+}
+
+const addRole = (message) => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            'INSERT INTO roles SET ?',
+            {
+                title: message.addRole,
+                salary: message.roleSalary,
+                department_id: message.roleDepartment
+            },
+            function(err, results) {
+                if (err) throw err;
+                resolve(results)
+            }
+        )
+    })
 }
 
 module.exports = {
     viewAllDpts,
     viewAllRoles,
-    viewAllEmp
+    viewAllEmp,
+    addDept,
+    addRole
 }

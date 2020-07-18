@@ -1,6 +1,6 @@
 DROP DATABASE IF EXISTS dep_db;
 CREATE DATABASE dep_db;
-USE dep_db
+USE dep_db;
 
 CREATE TABLE department (
     id INT(11) NOT NULL AUTO_INCREMENT,

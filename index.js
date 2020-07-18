@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const dbFunctions = require('./dbFunctions');
 
 
+
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
 // THEN I am presented with the following options: view all departments, view all roles, view all employees, 
@@ -23,20 +24,31 @@ const mainMenuPrompt = () => {
         ]
     }]).then(function (res) {
         if (res.main === 'View All Departments') {
-            return dbFunctions.viewAllDpts();
+            dbFunctions.viewAllDpts().then(results => {
+                console.table(results);
+                mainMenuPrompt();
+            });
+            
             // WHEN I choose to view all departments
             // THEN I am presented with a formatted table showing department names and department ids
         }
 
         if (res.main === 'View All Roles') {
-            return dbFunctions.viewAllRoles();
+            dbFunctions.viewAllRoles().then (results => {
+                console.table(results);
+                mainMenuPrompt()
+            });
+            
             // WHEN I choose to view all roles
             // THEN I am presented with the job title, role id, the department that role belongs to, 
             // and the salary for that role
         }
 
         if (res.main === 'View All Employees') {
-            return dbFunctions.viewAllEmp();
+            dbFunctions.viewAllEmp().then (results => {
+                console.table(results);
+                mainMenuPrompt()
+            });
             // WHEN I choose to view all employees
             // THEN I am presented with a formatted table showing employee data, 
             // including employee ids, first names, last names, job titles, departments, salaries, 
@@ -44,13 +56,46 @@ const mainMenuPrompt = () => {
         }
 
         if (res.main === 'Add a Department') {
-            return /*addDept();*/
+            inquirer.prompt([
+                {
+                type: 'input',
+                name: 'addDept',
+                message: 'What department would you like to add?'
+                }
+            ]).then(function(response){
+                dbFunctions.addDept(response.addDept).then (results => {
+                    console.log("\n" + response.addDept +' has been added'+ "\n");
+                    mainMenuPrompt()
+                });
+            })
+            
             // WHEN I choose to add a department
             // THEN I am prompted to enter the name of the department and that department is added to the database
         }
 
         if (res.main === 'Add a Role') {
-            return /*addRole()*/
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'addRole',
+                    message: 'What role would you like to add?'
+                },
+                {
+                    type: 'input',
+                    name: 'roleSalary',
+                    message: 'What is the salary for this role?'
+                },
+                {
+                    type: 'input',
+                    name: 'roleDepartment',
+                    message: 'What is the department for this role?'
+                }
+            ]).then(function(response){
+                return dbFunctions.addRole(response).then (results => {
+                    console.log("\n" + response.addRole +' has been added'+ "\n");
+                    mainMenuPrompt()
+                });
+            })
             // WHEN I choose to add a role
             // THEN I am prompted to enter the name, salary, 
             // and department for the role and that role is added to the database
