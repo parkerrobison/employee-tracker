@@ -3,15 +3,16 @@ const dbFunctions = require('./dbFunctions');
 const cTable = require('console.table');
 
 
-let inquirerLists = {deptRoles:[],empRoles:[]};
+let inquirerLists = {deptRoles:[],empRoles:[],empManagers:[]};
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
 // THEN I am presented with the following options: view all departments, view all roles, view all employees, 
 // add a department, add a role, add an employee, and update an employee role
 
-const  setUpInquirerLists = () => {
+const setUpInquirerLists = () => {
     setUpDeptRolesList();
     setUpEmpRolesList();
+    setUpManagerList();
 }
 
 const setUpDeptRolesList = () => {
@@ -21,8 +22,13 @@ const setUpDeptRolesList = () => {
 }
 
 const setUpEmpRolesList = () => {
-    dbFunctions.viewRolesForList().then(data => {
+    dbFunctions.viewAllRoles().then(data => {
         inquirerLists.empRoles = data;
+    })
+}
+const setUpManagerList = () => {
+    dbFunctions.viewAllEmp().then(data => {
+        inquirerLists.empManagers = data;
     })
 }
 
@@ -40,7 +46,6 @@ const mainMenuPrompt = () => {
             'Add a Role',
             'Add an Employee',
             'Update Employee Role',
-            'Get Dpt Name',
             'End Session'
         ]
     }]).then(function (res) {
@@ -129,6 +134,8 @@ const mainMenuPrompt = () => {
                     console.log("\n ----------------------------------------------------\n");
                     mainMenuPrompt()
                 });
+            }).then(function() {
+                setUpDeptRolesList();
             })
             // WHEN I choose to add a role
             // THEN I am prompted to enter the name, salary, 
@@ -154,20 +161,29 @@ const mainMenuPrompt = () => {
                     choices: inquirerLists.empRoles.map(data => data.title)
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'empManager',
-                    message: 'Who is their manager?'
+                    message: 'Who is their manager?',
+                    choices: inquirerLists.empManagers.map(data => data.manager)
                 }
             ]).then(function(response){
                 
                 response.empRole = inquirerLists.empRoles
                 .find(emp => emp.title === response.empRole).id;
+
+                console.log(response.empManager);
+                response.empManager = inquirerLists.empManagers
+                .find(empManager => empManager.manager === response.empManager).id;
+                console.log(response.empManager);
                 
                 return dbFunctions.addEmployee()(response).then (results => {
                     console.log("\n" + response.addEmployee +' has been added'+ "\n");
                     console.log("\n ----------------------------------------------------\n");
                     mainMenuPrompt()
                 });
+            }).then(function() {
+                setUpEmpRolesList();
+                setUpManagerList();
             })
             // WHEN I choose to add an employee
             // THEN I am prompted to enter the employee’s first name, last name, role, 
@@ -195,7 +211,6 @@ const mainMenuPrompt = () => {
         }
     })
 }
-
 
 
 setUpInquirerLists();
