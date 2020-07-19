@@ -8,13 +8,36 @@ const connection = mysql.createConnection({
     database: 'dep_db'
   });
 
+const viewRolesForList = () => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            `SELECT * FROM roles`,
+            function(err, results) {
+                resolve(results)
+            }
+        )
+    })
+}
+
+const viewEmpForList = () => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            `SELECT * FROM employee`,
+            function(err, results) {
+                resolve(results)
+            }
+        )
+    })
+}
+
 const viewAllDpts = () => {
     return new Promise ((resolve, reject) => {
         connection.query(
             'SELECT * FROM department',
             function(err, results) {
                 resolve(results)
-            })
+            }
+        )
     })
     
 }
@@ -22,10 +45,12 @@ const viewAllDpts = () => {
 const viewAllRoles = () => {
     return new Promise ((resolve, reject) => {
         connection.query(
-            'SELECT roles.id id, roles.title title, roles.salary salary, department.name Department Name FROM roles LEFT JOIN department ON roles.department_id = department.id',
+            `SELECT roles.id id, roles.title title, roles.salary salary, department.name Department 
+            FROM roles LEFT JOIN department ON roles.department_id = department.id`,
             function(err, results) {
                 resolve(results); 
-            });
+            }
+        )
     })
 }
 
@@ -76,10 +101,29 @@ const addRole = (message) => {
     })
 }
 
+const addEmployee = (message) => {
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            `INSERT INTO employee SET ?`,
+            {
+                first_name: message.firstName,
+                last_name: message.lastName,
+                role_id: message.empRole,
+                manager_id: message.empManager,
+            },
+            function(err, results) {
+                if (err) throw err;
+                resolve(results)
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllDpts,
     viewAllRoles,
     viewAllEmp,
     addDept,
-    addRole
+    addRole,
+    viewRolesForList
 }

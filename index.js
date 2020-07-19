@@ -1,12 +1,31 @@
 const inquirer = require('inquirer');
 const dbFunctions = require('./dbFunctions');
+const cTable = require('console.table');
 
 
-
+let inquirerLists = {deptRoles:[],empRoles:[]};
 // GIVEN a command-line application that accepts user input
 // WHEN I start the application
 // THEN I am presented with the following options: view all departments, view all roles, view all employees, 
 // add a department, add a role, add an employee, and update an employee role
+
+const  setUpInquirerLists = () => {
+    setUpDeptRolesList();
+    setUpEmpRolesList();
+}
+
+const setUpDeptRolesList = () => {
+    dbFunctions.viewAllDpts().then(data => {
+        inquirerLists.deptRoles = data;
+    }) 
+}
+
+const setUpEmpRolesList = () => {
+    dbFunctions.viewRolesForList().then(data => {
+        inquirerLists.empRoles = data;
+    })
+}
+
 
 const mainMenuPrompt = () => {
     inquirer.prompt([{
@@ -20,12 +39,15 @@ const mainMenuPrompt = () => {
             'Add a Department',
             'Add a Role',
             'Add an Employee',
-            'Update Employee Role'
+            'Update Employee Role',
+            'Get Dpt Name',
+            'End Session'
         ]
     }]).then(function (res) {
         if (res.main === 'View All Departments') {
             dbFunctions.viewAllDpts().then(results => {
                 console.table(results);
+                console.log("\n ----------------------------------------------------\n");
                 mainMenuPrompt();
             });
             
@@ -36,6 +58,7 @@ const mainMenuPrompt = () => {
         if (res.main === 'View All Roles') {
             dbFunctions.viewAllRoles().then (results => {
                 console.table(results);
+                console.log("\n ----------------------------------------------------\n");
                 mainMenuPrompt()
             });
             
@@ -47,6 +70,7 @@ const mainMenuPrompt = () => {
         if (res.main === 'View All Employees') {
             dbFunctions.viewAllEmp().then (results => {
                 console.table(results);
+                console.log("\n ----------------------------------------------------\n");
                 mainMenuPrompt()
             });
             // WHEN I choose to view all employees
@@ -65,8 +89,11 @@ const mainMenuPrompt = () => {
             ]).then(function(response){
                 dbFunctions.addDept(response.addDept).then (results => {
                     console.log("\n" + response.addDept +' has been added'+ "\n");
+                    console.log("\n ----------------------------------------------------\n");
                     mainMenuPrompt()
                 });
+            }).then(function() {
+                setUpDeptRolesList();
             })
             
             // WHEN I choose to add a department
@@ -86,13 +113,20 @@ const mainMenuPrompt = () => {
                     message: 'What is the salary for this role?'
                 },
                 {
-                    type: 'input',
+                    type: 'list',
                     name: 'roleDepartment',
-                    message: 'What is the department for this role?'
+                    message: 'What is the department for this role?',
+                    choices: inquirerLists.deptRoles.map(data => data.name)
                 }
             ]).then(function(response){
+                
+                response.roleDepartment = inquirerLists.deptRoles
+                .find(dept => dept.name === response.roleDepartment).id;
+                console.log(response.roleDepartment);
+
                 return dbFunctions.addRole(response).then (results => {
-                    console.log("\n" + response.addRole +' has been added'+ "\n");
+                    console.log("\n" + response.addRole + ' has been added'+ "\n");
+                    console.log("\n ----------------------------------------------------\n");
                     mainMenuPrompt()
                 });
             })
@@ -102,22 +136,67 @@ const mainMenuPrompt = () => {
         }
 
         if (res.main === 'Add an Employee') {
-            return /*addEmployee()*/
+            inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'firstName',
+                    message: 'What is the employee\'s first name?'
+                },
+                {
+                    type: 'input',
+                    name: 'lastName',
+                    message: 'What is the employee\'s last name?'
+                },
+                {
+                    type: 'list',
+                    name: 'empRole',
+                    message: 'What is their role?',
+                    choices: inquirerLists.empRoles.map(data => data.title)
+                },
+                {
+                    type: 'input',
+                    name: 'empManager',
+                    message: 'Who is their manager?'
+                }
+            ]).then(function(response){
+                
+                response.empRole = inquirerLists.empRoles
+                .find(emp => emp.title === response.empRole).id;
+                
+                return dbFunctions.addEmployee()(response).then (results => {
+                    console.log("\n" + response.addEmployee +' has been added'+ "\n");
+                    console.log("\n ----------------------------------------------------\n");
+                    mainMenuPrompt()
+                });
+            })
             // WHEN I choose to add an employee
             // THEN I am prompted to enter the employee’s first name, last name, role, 
             // and manager and that employee is added to the database
         }
 
         if (res.main === 'Update Employee Role') {
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'updateEmpRole',
+                    message: 'Which employee\'s role is being updated?',
+                    choices: ''
+                }
+            ])
             return /*updateEmployee()*/
             // WHEN I choose to update an employee role
             // THEN I am prompted to select an employee to update and their new role 
             // and this information is updated in the database 
+        }
+    
+        if (res.main === 'End Session') {
+            console.log('Session ended.')
+            return process.exit();
         }
     })
 }
 
 
 
-
+setUpInquirerLists();
 mainMenuPrompt();
