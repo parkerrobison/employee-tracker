@@ -19,17 +19,6 @@ const viewRolesForList = () => {
     })
 }
 
-// const viewEmpForList = () => {
-//     return new Promise ((resolve, reject) => {
-//         connection.query(
-//             `SELECT * FROM employee`,
-//             function(err, results) {
-//                 resolve(results)
-//             }
-//         )
-//     })
-// }
-
 const viewAllDpts = () => {
     return new Promise ((resolve, reject) => {
         connection.query(

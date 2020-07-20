@@ -26,6 +26,7 @@ const setUpEmpRolesList = () => {
 }
 const setUpManagerList = () => {
     dbFunctions.viewAllEmp().then(data => {
+        let empManagersUnfiltered = data;
         let managerArray = [];
             for(i=0; i < data.length; i++) {
                 
@@ -180,10 +181,9 @@ const mainMenuPrompt = () => {
                 response.empRole = inquirerLists.empRoles
                 .find(emp => emp.title === response.empRole).id;
 
-                // console.log(response.empManager);
+                console.log(response.empManager);
                 response.empManager = inquirerLists.empManagers
                 .find(empManager => empManager.manager === response.empManager).id;
-                // console.log(response.empManager);
                 
                 return dbFunctions.addEmployee()(response).then (results => {
                     console.log("\n" + response.addEmployee +' has been added'+ "\n");
