@@ -2,12 +2,7 @@ const inquirer = require('inquirer');
 const dbFunctions = require('./dbFunctions');
 const cTable = require('console.table');
 
-
 let inquirerLists = {deptRoles:[],empRoles:[],empManagers:[]};
-// GIVEN a command-line application that accepts user input
-// WHEN I start the application
-// THEN I am presented with the following options: view all departments, view all roles, view all employees, 
-// add a department, add a role, add an employee, and update an employee role
 
 const setUpInquirerLists = () => {
     setUpDeptRolesList();
@@ -18,17 +13,31 @@ const setUpInquirerLists = () => {
 const setUpDeptRolesList = () => {
     dbFunctions.viewAllDpts().then(data => {
         inquirerLists.deptRoles = data;
+        
     }) 
 }
 
 const setUpEmpRolesList = () => {
     dbFunctions.viewAllRoles().then(data => {
+        
         inquirerLists.empRoles = data;
+        
     })
 }
 const setUpManagerList = () => {
     dbFunctions.viewAllEmp().then(data => {
-        inquirerLists.empManagers = data;
+        let managerArray = [];
+            for(i=0; i < data.length; i++) {
+                
+                if(data[i].manager != null) {
+                    if(managerArray.includes(data[i].manager) != true) {
+                        managerArray.push(data[i].manager);
+                    }
+                    
+                }
+            }
+        inquirerLists.empManagers = managerArray;
+        
     })
 }
 
@@ -127,7 +136,7 @@ const mainMenuPrompt = () => {
                 
                 response.roleDepartment = inquirerLists.deptRoles
                 .find(dept => dept.name === response.roleDepartment).id;
-                console.log(response.roleDepartment);
+                
 
                 return dbFunctions.addRole(response).then (results => {
                     console.log("\n" + response.addRole + ' has been added'+ "\n");
@@ -135,7 +144,7 @@ const mainMenuPrompt = () => {
                     mainMenuPrompt()
                 });
             }).then(function() {
-                setUpDeptRolesList();
+                setUpEmpRolesList();
             })
             // WHEN I choose to add a role
             // THEN I am prompted to enter the name, salary, 
@@ -164,17 +173,17 @@ const mainMenuPrompt = () => {
                     type: 'list',
                     name: 'empManager',
                     message: 'Who is their manager?',
-                    choices: inquirerLists.empManagers.map(data => data.manager)
+                    choices: inquirerLists.empManagers
                 }
-            ]).then(function(response){
+            ]).then(function(response) {
                 
                 response.empRole = inquirerLists.empRoles
                 .find(emp => emp.title === response.empRole).id;
 
-                console.log(response.empManager);
+                // console.log(response.empManager);
                 response.empManager = inquirerLists.empManagers
                 .find(empManager => empManager.manager === response.empManager).id;
-                console.log(response.empManager);
+                // console.log(response.empManager);
                 
                 return dbFunctions.addEmployee()(response).then (results => {
                     console.log("\n" + response.addEmployee +' has been added'+ "\n");
@@ -194,8 +203,14 @@ const mainMenuPrompt = () => {
             inquirer.prompt([
                 {
                     type: 'list',
-                    name: 'updateEmpRole',
+                    name: 'selectEmp',
                     message: 'Which employee\'s role is being updated?',
+                    choices: ''
+                },
+                {
+                    type: 'list',
+                    name: 'updateEmpRole',
+                    message: 'What is their new role?',
                     choices: ''
                 }
             ])

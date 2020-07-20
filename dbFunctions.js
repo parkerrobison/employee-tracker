@@ -4,7 +4,7 @@ const cTable = require('console.table');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'Projai185815!',
     database: 'dep_db'
   });
 
@@ -19,16 +19,16 @@ const viewRolesForList = () => {
     })
 }
 
-const viewEmpForList = () => {
-    return new Promise ((resolve, reject) => {
-        connection.query(
-            `SELECT * FROM employee`,
-            function(err, results) {
-                resolve(results)
-            }
-        )
-    })
-}
+// const viewEmpForList = () => {
+//     return new Promise ((resolve, reject) => {
+//         connection.query(
+//             `SELECT * FROM employee`,
+//             function(err, results) {
+//                 resolve(results)
+//             }
+//         )
+//     })
+// }
 
 const viewAllDpts = () => {
     return new Promise ((resolve, reject) => {
@@ -125,5 +125,6 @@ module.exports = {
     viewAllEmp,
     addDept,
     addRole,
-    viewRolesForList
+    viewRolesForList,
+    addEmployee
 }
