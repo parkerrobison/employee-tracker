@@ -17,3 +17,23 @@ WHEN I choose to add an employee
 THEN I am prompted to enter the employee’s first name, last name, role, and manager and that employee is added to the database
 WHEN I choose to update an employee role
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database 
+
+const setUpManagerList = () => {
+    dbFunctions.viewAllEmp().then(data => {
+        let empManagersUnfiltered = data;
+        let managerArray = [];
+            for(i=0; i < data.length; i++) {
+                
+                if(data[i].manager === null) {
+                    managerArray.push(data[i]);
+                }
+            }
+            // console.log(managerArray)
+        inquirerLists.empManagers = managerArray.map(({ id, firstName, lastName }) => ({
+            name: firstName + " " + lastName,
+            value: id
+        }));
+
+        // console.log(inquirerLists.empManagers);
+    })
+}
