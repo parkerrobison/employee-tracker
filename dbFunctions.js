@@ -4,7 +4,7 @@ const cTable = require('console.table');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '',
+    password: 'Projai185815!',
     database: 'dep_db'
   });
 
@@ -91,22 +91,22 @@ const addRole = (message) => {
 }
 
 const addEmployee = (message) => {
-    // console.log(message);
-    // return new Promise ((resolve, reject) => {
-    //     connection.query(
-    //         `INSERT INTO employee SET ?`,
-    //         {
-    //             first_name: message.firstName,
-    //             last_name: message.lastName,
-    //             role_id: message.empRole,
-    //             manager_id: message.empManager,
-    //         },
-    //         function(err, results) {
-    //             if (err) throw err;
-    //             resolve(results)
-    //         }
-    //     )
-    // })
+    console.log(message);
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            `INSERT INTO employee SET ?`,
+            {
+                first_name: message.firstName,
+                last_name: message.lastName,
+                role_id: message.empRole,
+                manager_id: message.empManager.value,
+            },
+            function(err, results) {
+                if (err) throw err;
+                resolve(results)
+            }
+        )
+    })
 }
 
 module.exports = {
