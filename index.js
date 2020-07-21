@@ -2,7 +2,6 @@ const inquirer = require('inquirer');
 const dbFunctions = require('./dbFunctions');
 const cTable = require('console.table');
 
-
 let inquirerLists = {deptRoles:[],empRoles:[],empManagers:[], empList:[]};
 
 const setUpInquirerLists = () => {
@@ -14,42 +13,44 @@ const setUpInquirerLists = () => {
 
 const setUpDeptRolesList = () => {
     dbFunctions.viewAllDpts().then(data => {
-        inquirerLists.deptRoles = data;
-        
+        inquirerLists.deptRoles = data;  
     }) 
 }
 
 const setUpEmpRolesList = () => {
     dbFunctions.viewAllRoles().then(data => {
-        
         inquirerLists.empRoles = data;
-        
     })
 }
 const setUpManagerList = () => {
     dbFunctions.viewAllEmp().then(data => {
-        let empManagersUnfiltered = data;
         let managerArray = [];
             for(i=0; i < data.length; i++) {
                 
                 if(data[i].manager === null) {
                     if(managerArray.includes(data[i].manager) != true) {
                         managerArray.push(data[i]);
-                    }
-                    
+                    }   
                 }
             }
         inquirerLists.empManagers = managerArray.map(({id, firstName, lastName }) => ({
         name: `${firstName} ${lastName}`,
         value: id
         }))
-        // console.log(inquirerLists.empManagers);
     })
 }
 
 const setUpEmployeeList = () => {
     dbFunctions.viewAllEmp().then(data => {
-        inquirerLists.empList = data;
+        let empArray = [];
+        for(i=0; i < data.length; i++) {
+            empArray.push(data[i]);
+        }
+        // inquirerLists.empList = data;
+        inquirerLists.empList = empArray.map(({id, firstName, lastName }) => ({
+            name: `${firstName} ${lastName}`,
+            value: id
+        }))
     })
 }
 
@@ -190,14 +191,12 @@ const mainMenuPrompt = () => {
                 
                 response.empRole = inquirerLists.empRoles
                 .find(emp => emp.title === response.empRole).id;
-                
-                console.log(response.empManager)
+
                 response.empManager = inquirerLists.empManagers
                 .find(empManager => empManager.value === response.empManager);
-                console.log(response.empManager)
                 
                 return dbFunctions.addEmployee(response).then (results => {
-                    console.log("\n" + response.firstName + response.lastName +' has been added'+ "\n");
+                    console.log("\n" + response.firstName + " " + response.lastName +' has been added'+ "\n");
                     console.log("\n ----------------------------------------------------\n");
                     mainMenuPrompt()
                 });
@@ -210,29 +209,43 @@ const mainMenuPrompt = () => {
             // and manager and that employee is added to the database
         }
 
-        // if (res.main === 'Update Employee Role') {
-        //     inquirer.prompt([
-        //         {
-        //             type: 'list',
-        //             name: 'selectEmp',
-        //             message: 'Which employee\'s role is being updated?',
-        //             choices: inquirerLists.empList.map(emp => (emp.firstName + " " + emp.lastName))
-        //         },
-        //         {
-        //             type: 'list',
-        //             name: 'updateEmpRole',
-        //             message: 'What is their new role?',
-        //             choices: ''
-        //         }
-        //     ]).then(function (response) {
-        //         console.log(response)
-        //     })
+        if (res.main === 'Update Employee Role') {
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'selectEmp',
+                    message: 'Which employee\'s role is being updated?',
+                    choices: inquirerLists.empList
+                },
+                {
+                    type: 'list',
+                    name: 'updateEmpRole',
+                    message: 'What is their new role?',
+                    choices: inquirerLists.empRoles.map(data => data.title)
+                }
+            ]).then(function (response) {
+                
+                response.selectEmp = inquirerLists.empList
+                .find(emp => emp.value === response.selectEmp);
+                
+                response.updateEmpRole = inquirerLists.empRoles
+                .find(empRole => empRole.title === response.updateEmpRole).id;
+
+                return dbFunctions.updateEmployee(response).then(results => {
+                    console.log("\n" + "Employee role has been updated" + "\n");
+                    console.log("\n ----------------------------------------------------\n");
+                    mainMenuPrompt()
+                });
+            })
+            .then(function() {
+                setUpEmpRolesList();
+                setUpEmployeeList();
+            })
             
-        //     /* return updateEmployee()*/
-        //     // WHEN I choose to update an employee role
-        //     // THEN I am prompted to select an employee to update and their new role 
-        //     // and this information is updated in the database 
-        // }
+            // WHEN I choose to update an employee role
+            // THEN I am prompted to select an employee to update and their new role 
+            // and this information is updated in the database 
+        }
     
         if (res.main === 'End Session') {
             console.log('Session ended.')

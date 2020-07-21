@@ -47,8 +47,8 @@ const viewAllEmp = () => {
     return new Promise ((resolve, reject) => {
         connection.query(
            `SELECT employee.id id, employee.first_name firstName,
-           employee.last_name lastName, roles.title, CONCAT(employee2.first_name, " ", employee2.last_name) manager FROM employee 
-           LEFT JOIN employee employee2 ON employee.manager_id = employee2.id
+           employee.last_name lastName, roles.title, CONCAT(employee2.first_name, " ", employee2.last_name) 
+           manager FROM employee LEFT JOIN employee employee2 ON employee.manager_id = employee2.id
            LEFT JOIN roles ON employee.role_id = roles.id;`,
             function(err, results) {
                 resolve(results);
@@ -91,7 +91,6 @@ const addRole = (message) => {
 }
 
 const addEmployee = (message) => {
-    console.log(message);
     return new Promise ((resolve, reject) => {
         connection.query(
             `INSERT INTO employee SET ?`,
@@ -109,6 +108,25 @@ const addEmployee = (message) => {
     })
 }
 
+const updateEmployee = (message) => {
+    // console.log(message);
+    // console.log(message.updateEmpRole)
+    return new Promise ((resolve, reject) => {
+        connection.query(
+            `UPDATE employee SET ? WHERE ?`,
+            {
+                role_id: message.updateEmpRole,
+                id: message.selectEmp.value
+
+            },
+            function(err, results) {
+                if (err) throw err;
+                resolve(results)
+            }
+        )
+    })
+}
+
 module.exports = {
     viewAllDpts,
     viewAllRoles,
@@ -116,5 +134,6 @@ module.exports = {
     addDept,
     addRole,
     viewRolesForList,
-    addEmployee
+    addEmployee,
+    updateEmployee
 }
