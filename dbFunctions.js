@@ -109,10 +109,7 @@ const addEmployee = (message) => {
 }
 
 const updateEmployee = (message) => {
-    console.log(message);
-    console.log(message.updateEmpRole)
-    
-    return new Promise ((resolve, reject) => {
+        return new Promise ((resolve, reject) => {
         connection.query(
             `UPDATE employee SET role_id = ? WHERE id = ?`,
             [message.updateEmpRole, message.selectEmp.value],
