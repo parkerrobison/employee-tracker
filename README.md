@@ -37,6 +37,9 @@
 
   ## Questions
   If you run into any errors or have further questions about this program, you can contact here: 
+  
   *github: https://github.com/parkerrobison 
+  
   *email: parkerobison@gmail.com.
+  
   Please reference the project in question in the message. Thank you.
