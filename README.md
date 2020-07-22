@@ -5,10 +5,7 @@
   ## Description 
   
   This is a CLI application that allows a user to see and update employee information from a database. The program uses node.js, inquirer, MySQL and javascript to display employee, role, and department information. The user can select from a list of actions to take including viewing data, adding, data and changing data in the data base. This application was made so that a supervisor could very quickly gather and view information about the companies employees.
-  ![mainmenu](./assets/images/main-menu.JPG)
-  ![mainmenu](./assets/images/employees.JPG)
-  ![mainmenu](./assets/images/roles.JPG)
-  ![mainmenu](./assets/images/updated-info.JPG)
+ 
   
   ## Table of Contents
   
@@ -17,6 +14,12 @@
   * [Credits](#credits)
   * [License](#license)
   
+  ## Images
+
+  ![mainmenu](./assets/images/main-menu.JPG)
+  ![mainmenu](./assets/images/employees.JPG)
+  ![mainmenu](./assets/images/roles.JPG)
+  ![mainmenu](./assets/images/updated-info.JPG)
 
   ## Installation
   
