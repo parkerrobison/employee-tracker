@@ -14,12 +14,15 @@
   * [Credits](#credits)
   * [License](#license)
   
-  ## Images
+  ## Images/videos
 
   ![mainmenu](./assets/images/main-menu.JPG)
   ![mainmenu](./assets/images/employees.JPG)
   ![mainmenu](./assets/images/roles.JPG)
   ![mainmenu](./assets/images/updated-info.JPG)
+  
+  ### Walkthrough of the application
+  https://drive.google.com/file/d/1tftEshZcyAEIuOGefqdxFSKEqchIYuDY/view
 
   ## Installation
   
